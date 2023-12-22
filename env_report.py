@@ -4,7 +4,26 @@ from gpiozero import CPUTemperature
 from sense_hat import SenseHat
 
 
-def construct_even(colour_bg: list[int], colour_fg: list[int]):
+def construct_boxes_inner(colour_bg: list[int], colour_fg: list[int]):
+    o = colour_bg
+    x = colour_fg
+
+    # fmt: off
+    ring = [
+        o, o, o, o, o, o, o, o,
+        o, x, x, x, x, x, x, o,
+        o, x, o, o, o, o, x, o,
+        o, x, o, x, x, o, x, o,
+        o, x, o, x, x, o, x, o,
+        o, x, o, o, o, o, x, o,
+        o, x, x, x, x, x, x, o,
+        o, o, o, o, o, o, o, o,
+    ]
+
+    return ring
+
+
+def construct_boxes_outer(colour_bg: list[int], colour_fg: list[int]):
     o = colour_bg
     x = colour_fg
 
@@ -18,25 +37,6 @@ def construct_even(colour_bg: list[int], colour_fg: list[int]):
         x, o, x, x, x, x, o, x,
         x, o, o, o, o, o, o, x,
         x, x, x, x, x, x, x, x,
-    ]
-
-    return ring
-
-
-def construct_odd(colour_bg: list[int], colour_fg: list[int]):
-    o = colour_bg
-    x = colour_fg
-
-    # fmt: off
-    ring = [
-        o, o, o, o, o, o, o, o,
-        o, x, x, x, x, x, x, o,
-        o, x, o, o, o, o, x, o,
-        o, x, o, x, x, o, x, o,
-        o, x, o, x, x, o, x, o,
-        o, x, o, o, o, o, x, o,
-        o, x, x, x, x, x, x, o,
-        o, o, o, o, o, o, o, o,
     ]
 
     return ring
@@ -67,9 +67,9 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
     secs = time.localtime(time.time()).tm_sec
 
     if secs < 30:
-        ring = construct_odd(colour_bg, colour_fg)
+        ring = construct_boxes_outer(colour_bg, colour_fg)
     else:
-        ring = construct_even(colour_bg, colour_fg)
+        ring = construct_boxes_inner(colour_bg, colour_fg)
 
     sense.set_pixels(ring)
 
