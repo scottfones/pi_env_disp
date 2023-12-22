@@ -4,26 +4,7 @@ from gpiozero import CPUTemperature
 from sense_hat import SenseHat
 
 
-def construct_inner(colour_bg: list[int], colour_fg: list[int]):
-    o = colour_bg
-    x = colour_fg
-
-    # fmt: off
-    ring = [
-        x, x, x, x, x, x, x, x,
-        x, o, o, o, o, o, o, x,
-        x, o, o, o, o, o, o, x,
-        x, o, o, x, x, o, o, x,
-        x, o, o, x, x, o, o, x,
-        x, o, o, o, o, o, o, x,
-        x, o, o, o, o, o, o, x,
-        x, x, x, x, x, x, x, x,
-    ]
-
-    return ring
-
-
-def construct_mid(colour_bg: list[int], colour_fg: list[int]):
+def construct_odd(colour_bg: list[int], colour_fg: list[int]):
     o = colour_bg
     x = colour_fg
 
@@ -31,10 +12,10 @@ def construct_mid(colour_bg: list[int], colour_fg: list[int]):
     ring = [
         o, o, o, o, o, o, o, o,
         o, x, x, x, x, x, x, o,
-        o, x, x, x, x, x, x, o,
-        o, x, x, o, o, x, x, o,
-        o, x, x, o, o, x, x, o,
-        o, x, x, x, x, x, x, o,
+        o, x, o, o, o, o, x, o,
+        o, x, o, x, x, o, x, o,
+        o, x, o, x, x, o, x, o,
+        o, x, o, o, o, o, x, o,
         o, x, x, x, x, x, x, o,
         o, o, o, o, o, o, o, o,
     ]
@@ -42,19 +23,19 @@ def construct_mid(colour_bg: list[int], colour_fg: list[int]):
     return ring
 
 
-def construct_outer(colour_bg: list[int], colour_fg: list[int]):
+def construct_even(colour_bg: list[int], colour_fg: list[int]):
     o = colour_bg
     x = colour_fg
 
     # fmt: off
     ring = [
         x, x, x, x, x, x, x, x,
-        x, x, x, x, x, x, x, x,
-        x, x, o, o, o, o, x, x,
-        x, x, o, o, o, o, x, x,
-        x, x, o, o, o, o, x, x,
-        x, x, o, o, o, o, x, x,
-        x, x, x, x, x, x, x, x,
+        x, o, o, o, o, o, x, x,
+        x, o, x, x, x, x, o, x,
+        x, o, x, o, o, x, o, x,
+        x, o, x, o, o, x, o, x,
+        x, o, x, x, x, x, o, x,
+        x, o, o, o, o, o, o, x,
         x, x, x, x, x, x, x, x,
     ]
 
@@ -82,15 +63,13 @@ def detailed_display(
 
 
 def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
-    secs = time.localtime(time.time()).tm_sec
-
     ring = []
-    if secs < 20:
-        ring = construct_outer(colour_bg, colour_fg)
-    elif secs < 40:
-        ring = construct_mid(colour_bg, colour_fg)
+
+    secs = time.localtime(time.time()).tm_sec
+    if secs < 30:
+        ring = construct_odd(colour_bg, colour_fg)
     else:
-        ring = construct_inner(colour_bg, colour_fg)
+        ring = construct_even(colour_bg, colour_fg)
 
     sense.set_pixels(ring)
 
@@ -104,11 +83,11 @@ def main():
         colour_bg = [0, 0, 0]
 
         cpu_temp = cpu.temperature
-        if cpu_temp > 50 and cpu_temp < 60:
+        if cpu_temp > 55 and cpu_temp < 65:
             colour_fg = [140, 120, 0]
-        elif cpu_temp >= 60:
-            colour_fg = [125, 125, 125]
-            colour_bg = [100, 0, 0]
+        elif cpu_temp >= 65:
+            colour_fg = [125, 0, 0]
+            colour_bg = [50, 0, 0]
 
         if sense.stick.get_events():
             detailed_display(colour_bg, colour_fg, cpu_temp, sense)
