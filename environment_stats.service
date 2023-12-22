@@ -1,0 +1,10 @@
+[Unit]
+Description=display pi environment statistics
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/home/scott/Applications/EnvDisplay/pi_env_disp/env_report.py
+
+[Install]
+WantedBy=default.target
