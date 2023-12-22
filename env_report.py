@@ -42,6 +42,46 @@ def construct_boxes_outer(colour_bg: list[int], colour_fg: list[int]):
     return ring
 
 
+def construct_columns_inner(colour_bg: list[int], colour_fg: list[int]):
+    ring = [colour_fg] * 64
+    for i in range(0, 64, 2):
+        ring[i] = colour_bg
+    return ring
+
+
+def construct_columns_outer(colour_bg: list[int], colour_fg: list[int]):
+    ring = [colour_bg] * 64
+    for i in range(0, 64, 2):
+        ring[i] = colour_fg
+    return ring
+
+
+def construct_field_inner(colour_bg: list[int], colour_fg: list[int]):
+    ring = [colour_fg] * 64
+    for row in range(8):
+        if row & 1:
+            for col in range(0, 8, 2):
+                ring[row * 8 + col] = colour_bg
+        else:
+            for col in range(1, 8, 2):
+                ring[row * 8 + col] = colour_bg
+
+    return ring
+
+
+def construct_field_outer(colour_bg: list[int], colour_fg: list[int]):
+    ring = [colour_bg] * 64
+    for row in range(8):
+        if row & 1:
+            for col in range(0, 8, 2):
+                ring[row * 8 + col] = colour_fg
+        else:
+            for col in range(1, 8, 2):
+                ring[row * 8 + col] = colour_fg
+
+    return ring
+
+
 def detailed_display(
     colour_bg: list[int], colour_fg: list[int], cpu_temp: float, sense: SenseHat
 ):
@@ -67,9 +107,9 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
     secs = time.localtime(time.time()).tm_sec
 
     if secs < 30:
-        ring = construct_boxes_outer(colour_bg, colour_fg)
+        ring = construct_field_inner(colour_bg, colour_fg)
     else:
-        ring = construct_boxes_inner(colour_bg, colour_fg)
+        ring = construct_field_outer(colour_bg, colour_fg)
 
     sense.set_pixels(ring)
 
