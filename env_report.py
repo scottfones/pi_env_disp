@@ -79,7 +79,7 @@ def main():
     sense = SenseHat()
 
     while True:
-        colour_fg = [25, 125, 25]
+        colour_fg = [25, 50, 25]
         colour_bg = [0, 0, 0]
 
         cpu_temp = cpu.temperature
