@@ -19,7 +19,6 @@ def construct_boxes_inner(colour_bg: list[int], colour_fg: list[int]):
         o, x, x, x, x, x, x, o,
         o, o, o, o, o, o, o, o,
     ]
-
     return ring
 
 
@@ -38,47 +37,78 @@ def construct_boxes_outer(colour_bg: list[int], colour_fg: list[int]):
         x, o, o, o, o, o, o, x,
         x, x, x, x, x, x, x, x,
     ]
-
     return ring
 
 
 def construct_columns_inner(colour_bg: list[int], colour_fg: list[int]):
-    ring = [colour_fg] * 64
-    for i in range(0, 64, 2):
-        ring[i] = colour_bg
+    o = colour_bg
+    x = colour_fg
+
+    # fmt: off
+    ring = [
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+        o, x, o, x, o, x, o, x,
+    ]
     return ring
 
 
 def construct_columns_outer(colour_bg: list[int], colour_fg: list[int]):
-    ring = [colour_bg] * 64
-    for i in range(0, 64, 2):
-        ring[i] = colour_fg
+    o = colour_bg
+    x = colour_fg
+
+    # fmt: off
+    ring = [
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+        x, o, x, o, x, o, x, o,
+    ]
     return ring
 
 
 def construct_field_inner(colour_bg: list[int], colour_fg: list[int]):
-    ring = [colour_fg] * 64
-    for row in range(8):
-        if row & 1:
-            for col in range(0, 8, 2):
-                ring[row * 8 + col] = colour_bg
-        else:
-            for col in range(1, 8, 2):
-                ring[row * 8 + col] = colour_bg
+    o = colour_bg
+    x = colour_fg
 
+    # fmt: off
+    ring = [
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+    ]
     return ring
 
 
 def construct_field_outer(colour_bg: list[int], colour_fg: list[int]):
-    ring = [colour_bg] * 64
-    for row in range(8):
-        if row & 1:
-            for col in range(0, 8, 2):
-                ring[row * 8 + col] = colour_fg
-        else:
-            for col in range(1, 8, 2):
-                ring[row * 8 + col] = colour_fg
+    o = colour_bg
+    x = colour_fg
 
+    # fmt: off
+    ring = [
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+        x, o, x, o, x, o, x, o,
+        o, x, o, x, o, x, o, x,
+    ]
     return ring
 
 
