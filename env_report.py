@@ -175,6 +175,7 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
         construct_boxes_b,
         construct_boxes_c,
         construct_boxes_d,
+        construct_boxes_d,
         construct_boxes_c,
         construct_boxes_b,
         construct_boxes_a,
