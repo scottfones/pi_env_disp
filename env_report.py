@@ -4,7 +4,25 @@ from gpiozero import CPUTemperature
 from sense_hat import SenseHat
 
 
-def construct_boxes_inner(colour_bg: list[int], colour_fg: list[int]):
+def construct_boxes_a(colour_bg: list[int], colour_fg: list[int]):
+    o = colour_bg
+    x = colour_fg
+
+    # fmt: off
+    ring = [
+        x, x, x, x, x, x, x, x,
+        x, o, o, o, o, o, o, x,
+        x, o, o, o, o, o, o, x,
+        x, o, o, o, o, o, o, x,
+        x, o, o, o, o, o, o, x,
+        x, o, o, o, o, o, o, x,
+        x, o, o, o, o, o, o, x,
+        x, x, x, x, x, x, x, x,
+    ]
+    return ring
+
+
+def construct_boxes_b(colour_bg: list[int], colour_fg: list[int]):
     o = colour_bg
     x = colour_fg
 
@@ -13,8 +31,8 @@ def construct_boxes_inner(colour_bg: list[int], colour_fg: list[int]):
         o, o, o, o, o, o, o, o,
         o, x, x, x, x, x, x, o,
         o, x, o, o, o, o, x, o,
-        o, x, o, x, x, o, x, o,
-        o, x, o, x, x, o, x, o,
+        o, x, o, o, o, o, x, o,
+        o, x, o, o, o, o, x, o,
         o, x, o, o, o, o, x, o,
         o, x, x, x, x, x, x, o,
         o, o, o, o, o, o, o, o,
@@ -22,20 +40,38 @@ def construct_boxes_inner(colour_bg: list[int], colour_fg: list[int]):
     return ring
 
 
-def construct_boxes_outer(colour_bg: list[int], colour_fg: list[int]):
+def construct_boxes_c(colour_bg: list[int], colour_fg: list[int]):
     o = colour_bg
     x = colour_fg
 
     # fmt: off
     ring = [
-        x, x, x, x, x, x, x, x,
-        x, o, o, o, o, o, x, x,
-        x, o, x, x, x, x, o, x,
-        x, o, x, o, o, x, o, x,
-        x, o, x, o, o, x, o, x,
-        x, o, x, x, x, x, o, x,
-        x, o, o, o, o, o, o, x,
-        x, x, x, x, x, x, x, x,
+        o, o, o, o, o, o, o, o,
+        o, o, o, o, o, o, o, o,
+        o, o, x, x, x, x, o, o,
+        o, o, x, o, o, x, o, o,
+        o, o, x, o, o, x, o, o,
+        o, o, x, x, x, x, o, o,
+        o, o, o, o, o, o, o, o,
+        o, o, o, o, o, o, o, o,
+    ]
+    return ring
+
+
+def construct_boxes_d(colour_bg: list[int], colour_fg: list[int]):
+    o = colour_bg
+    x = colour_fg
+
+    # fmt: off
+    ring = [
+        o, o, o, o, o, o, o, o,
+        o, o, o, o, o, o, o, o,
+        o, o, o, o, o, o, o, o,
+        o, o, o, x, x, o, o, o,
+        o, o, o, x, x, o, o, o,
+        o, o, o, o, o, o, o, o,
+        o, o, o, o, o, o, o, o,
+        o, o, o, o, o, o, o, o,
     ]
     return ring
 
@@ -134,12 +170,17 @@ def detailed_display(
 
 def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
     ring = []
-    secs = time.localtime(time.time()).tm_sec
-
-    if secs < 30:
-        ring = construct_field_inner(colour_bg, colour_fg)
-    else:
-        ring = construct_field_outer(colour_bg, colour_fg)
+    ring_seq = [
+        construct_boxes_a,
+        construct_boxes_b,
+        construct_boxes_c,
+        construct_boxes_d,
+        construct_boxes_c,
+        construct_boxes_b,
+        construct_boxes_a,
+    ]
+    secs = time.localtime(time.time()).tm_sec % len(ring_seq)
+    ring = ring_seq[secs](colour_bg, colour_fg)
 
     sense.set_pixels(ring)
 
@@ -149,7 +190,7 @@ def main():
     sense = SenseHat()
 
     while True:
-        colour_fg = [25, 50, 25]
+        colour_fg = [0, 50, 0]
         colour_bg = [0, 0, 0]
 
         cpu_temp = cpu.temperature
