@@ -192,6 +192,7 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
 
 
 def soda_display(sense: SenseHat, soda_count: int):
+    sense.show_message("+1", text_colour=[92, 64, 51])
     sense.show_message(f"Refills: {soda_count}", text_colour=[92, 64, 51])
 
 
