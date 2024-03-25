@@ -2,6 +2,7 @@
 import time
 from gpiozero import CPUTemperature
 from sense_hat import SenseHat
+from pathlib import Path
 
 
 def construct_boxes_a(colour_bg: list[int], colour_fg: list[int]):
@@ -190,9 +191,28 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
     sense.set_pixels(ring)
 
 
+def soda_display(sense: SenseHat, soda_count: int):
+    sense.show_message(f"Refills: {soda_count}", text_colour=[150, 75, 0])
+
+
+def soda_write(soda_count: int, soda_file: Path):
+    with open(soda_file, "w") as f:
+        f.write(str(soda_count))
+
+
 def main():
     cpu = CPUTemperature()
     sense = SenseHat()
+    soda_count = 0
+    soda_file = Path("./soda_count.txt")
+
+    if soda_file.exists():
+        with open(soda_file) as f:
+            soda_count = int(f.readline().strip())
+    else:
+        soda_file.touch()
+        with open(soda_file, "w") as f:
+            f.write("0")
 
     while True:
         colour_fg = [0, 50, 0]
@@ -205,10 +225,19 @@ def main():
             colour_fg = [125, 0, 0]
             colour_bg = [50, 0, 0]
 
-        if sense.stick.get_events():
-            detailed_display(colour_bg, colour_fg, cpu_temp, sense)
-        else:
-            simple_display(colour_bg, colour_fg, sense)
+        for event in sense.stick.get_events():
+            print(event)
+            if event.action == "pressed":
+                if event.direction == "middle":
+                    detailed_display(colour_bg, colour_fg, cpu_temp, sense)
+                elif event.direction == "left":
+                    soda_count += 1
+                    soda_display(sense, soda_count)
+                    soda_write(soda_count, soda_file)
+                elif event.direction == "right":
+                    soda_display(sense, soda_count)
+
+        simple_display(colour_bg, colour_fg, sense)
 
         time.sleep(1)
 
