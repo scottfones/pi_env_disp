@@ -204,7 +204,7 @@ def main():
     cpu = CPUTemperature()
     sense = SenseHat()
     soda_count = 0
-    soda_file = Path("./soda_count.txt")
+    soda_file = Path("/home/scott/Applications/EnvDisplay/pi_env_disp/soda_count.txt")
 
     if soda_file.exists():
         with open(soda_file) as f:
@@ -226,7 +226,6 @@ def main():
             colour_bg = [50, 0, 0]
 
         for event in sense.stick.get_events():
-            print(event)
             if event.action == "pressed":
                 if event.direction == "middle":
                     detailed_display(colour_bg, colour_fg, cpu_temp, sense)
