@@ -6,25 +6,26 @@ This script was written for a Raspberry Pi 4 with a Sense Hat in a C4Labs Zebra 
 
 The service file should be installed to `~/.config/systemd/user/environment_stats.service`.
 
-```bash 
+```bash
 mkdir -p ~/.config/systemd/user
 cp ./environment_stats.service ~/.config/systemd/user/environment_stats.service
 ```
 
 Ensure the script is executable:
 
-```bash 
+```bash
 chmod +x ./env_report.py
 ```
+
 Enable the service:
 
-```bash 
+```bash
 systemctl --user enable environment_stats.service
 ```
 
 Start the service:
 
-```bash 
+```bash
 systemctl --user start environment_stats.service
 ```
 
@@ -32,18 +33,18 @@ systemctl --user start environment_stats.service
 
 Restart:
 
-```bash 
+```bash
 systemctl --user restart environment_stats.service
 ```
 
 Stop:
 
-```bash 
+```bash
 systemctl --user stop environment_stats.service
 ```
 
 Disable:
 
-```bash 
+```bash
 systemctl --user disable environment_stats.service
 ```
