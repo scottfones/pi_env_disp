@@ -192,11 +192,11 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
 
 
 def soda_display(sense: SenseHat, soda_count: int):
-    sense.show_message("+1", text_colour=[92, 64, 51])
     sense.show_message(f"Refills: {soda_count}", text_colour=[92, 64, 51])
 
 
-def soda_write(soda_count: int, soda_file: Path):
+def soda_write(sense: SenseHat, soda_count: int, soda_file: Path):
+    sense.show_message("+1", text_colour=[92, 64, 51])
     with open(soda_file, "w") as f:
         f.write(str(soda_count))
 
@@ -232,8 +232,8 @@ def main():
                     detailed_display(colour_bg, colour_fg, cpu_temp, sense)
                 elif event.direction == "left":
                     soda_count += 1
+                    soda_write(sense, soda_count, soda_file)
                     soda_display(sense, soda_count)
-                    soda_write(soda_count, soda_file)
                 elif event.direction == "right":
                     soda_display(sense, soda_count)
 
