@@ -2,9 +2,11 @@
 import signal
 import sys
 import time
+from pathlib import Path
 
-from gpiozero import CPUTemperature
 from sense_hat import SenseHat
+
+CPU_TEMP_FILE = Path("/sys/class/thermal/thermal_zone0/temp")
 
 
 def construct_boxes_a(colour_bg: list[int], colour_fg: list[int]):
@@ -194,7 +196,6 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
 
 
 def main():
-    cpu = CPUTemperature()
     sense = SenseHat()
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
@@ -203,7 +204,7 @@ def main():
             colour_fg = [0, 50, 0]
             colour_bg = [0, 0, 0]
 
-            cpu_temp = cpu.temperature
+            cpu_temp = int(CPU_TEMP_FILE.read_text()) / 1000
             if cpu_temp > 55 and cpu_temp < 65:
                 colour_fg = [140, 120, 0]
             elif cpu_temp >= 65:
