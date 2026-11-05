@@ -1,8 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+import signal
+import sys
 import time
+
 from gpiozero import CPUTemperature
 from sense_hat import SenseHat
-from pathlib import Path
 
 
 def construct_boxes_a(colour_bg: list[int], colour_fg: list[int]):
@@ -191,55 +193,32 @@ def simple_display(colour_bg: list[int], colour_fg: list[int], sense: SenseHat):
     sense.set_pixels(ring)
 
 
-def soda_display(sense: SenseHat, soda_count: int):
-    sense.show_message(f"Refills: {soda_count}", text_colour=[92, 64, 51])
-
-
-def soda_write(sense: SenseHat, soda_count: int, soda_file: Path):
-    sense.show_message("+1", text_colour=[92, 64, 51])
-    with open(soda_file, "w") as f:
-        f.write(str(soda_count))
-
-
 def main():
     cpu = CPUTemperature()
     sense = SenseHat()
-    soda_count = 0
-    soda_file = Path("/home/scott/Applications/EnvDisplay/pi_env_disp/soda_count.txt")
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
 
-    if soda_file.exists():
-        with open(soda_file) as f:
-            soda_count = int(f.readline().strip())
-    else:
-        soda_file.touch()
-        with open(soda_file, "w") as f:
-            f.write("0")
+    try:
+        while True:
+            colour_fg = [0, 50, 0]
+            colour_bg = [0, 0, 0]
 
-    while True:
-        colour_fg = [0, 50, 0]
-        colour_bg = [0, 0, 0]
+            cpu_temp = cpu.temperature
+            if cpu_temp > 55 and cpu_temp < 65:
+                colour_fg = [140, 120, 0]
+            elif cpu_temp >= 65:
+                colour_fg = [125, 0, 0]
+                colour_bg = [50, 0, 0]
 
-        cpu_temp = cpu.temperature
-        if cpu_temp > 55 and cpu_temp < 65:
-            colour_fg = [140, 120, 0]
-        elif cpu_temp >= 65:
-            colour_fg = [125, 0, 0]
-            colour_bg = [50, 0, 0]
-
-        for event in sense.stick.get_events():
-            if event.action == "pressed":
-                if event.direction == "middle":
+            for event in sense.stick.get_events():
+                if event.action == "pressed" and event.direction == "middle":
                     detailed_display(colour_bg, colour_fg, cpu_temp, sense)
-                elif event.direction == "left":
-                    soda_count += 1
-                    soda_write(sense, soda_count, soda_file)
-                    soda_display(sense, soda_count)
-                elif event.direction == "right":
-                    soda_display(sense, soda_count)
 
-        simple_display(colour_bg, colour_fg, sense)
+            simple_display(colour_bg, colour_fg, sense)
 
-        time.sleep(1)
+            time.sleep(1)
+    finally:
+        sense.clear()
 
 
 if __name__ == "__main__":
